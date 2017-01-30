@@ -18,6 +18,9 @@ import pandas as pd
 # Importing the Keras libraries and packages
 import keras
 from keras.models import Sequential
+from keras.layers import Convolution2D
+from keras.layers import MaxPooling2D
+from keras.layers import Flatten
 from keras.layers import Dense
 
 
@@ -38,19 +41,21 @@ sc = StandardScaler()
 X_train = sc.fit_transform(X_train)
 X_test = sc.transform(X_test)
 
-# Part 2 - Now let's make the ANN!
+# Part 2 - Now let's make the CNN!
 
 
-# Initialising the ANN
+# Initialising the CNN
 classifier = Sequential()
 
 # Trial 1
-classifier.add(Dense(output_dim = 400, init = 'uniform', activation = 'relu', input_dim = 784))
-classifier.add(Dense(output_dim = 400, init = 'uniform', activation = 'relu'))
-classifier.add(Dense(output_dim = 400, init = 'uniform', activation = 'relu'))
-classifier.add(Dense(output_dim = 10, init = 'uniform', activation = 'softmax'))
+classifier.add(Convolution2D(32, 3, 3, input_shape = (28, 28, 1), activation = 'relu'))
+classifier.add(MaxPooling2D(pool_size = (2, 2)))
+classifier.add(Flatten())
+classifier.add(Dense(output_dim = 256, activation = 'relu'))
+classifier.add(Dense(output_dim = 256, activation = 'relu'))
+classifier.add(Dense(output_dim = 10, activation = 'softmax'))
 classifier.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics = ['accuracy'])
-classifier.fit(X_train, y_train, batch_size = 20, nb_epoch = 60)
+classifier.fit(X_train, y_train, batch_size = 24, nb_epoch = 60)
 # Result in accuracy 0.95154761904761909
 
 del classifier
@@ -65,8 +70,8 @@ classifier.add(Dense(output_dim = 500, init = 'uniform', activation = 'relu'))
 classifier.add(Dense(output_dim = 500, init = 'uniform', activation = 'relu'))
 classifier.add(Dense(output_dim = 10, init = 'uniform', activation = 'softmax'))
 classifier.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics = ['accuracy'])
-classifier.fit(X_train, y_train, batch_size = 20, nb_epoch = 60)
-# Result in accuracy 0.93178571428571433
+classifier.fit(X_train, y_train, batch_size = 24, nb_epoch = 60)
+# Result in accuracy 
 
 del classifier
 del y_pred, y_pred1,y_test1
@@ -142,23 +147,6 @@ classifier.add(Dense(output_dim = 10, init = 'uniform', activation = 'softmax'))
 classifier.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics = ['accuracy'])
 classifier.fit(X_train, y_train, batch_size = 20, nb_epoch = 100)
 # Result in accuracy 0.40273809523809523???
-
-del classifier
-del y_pred, y_pred1,y_test1
-del cm
-del i, row, N
-# Trial 8
-classifier = Sequential()
-classifier.add(Dense(output_dim = 256, init = 'uniform', activation = 'relu', input_dim = 784))
-classifier.add(Dense(output_dim = 256, init = 'uniform', activation = 'relu'))
-classifier.add(Dense(output_dim = 256, init = 'uniform', activation = 'relu'))
-classifier.add(Dense(output_dim = 256, init = 'uniform', activation = 'relu'))
-classifier.add(Dense(output_dim = 256, init = 'uniform', activation = 'relu'))
-classifier.add(Dense(output_dim = 256, init = 'uniform', activation = 'relu'))
-classifier.add(Dense(output_dim = 10, init = 'uniform', activation = 'softmax'))
-classifier.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics = ['accuracy'])
-classifier.fit(X_train, y_train, batch_size = 20, nb_epoch = 80)
-# Result in accuracy 0.91249999999999998
 
 # Part 3 - Making the predictions and evaluating the model
 
