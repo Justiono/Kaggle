@@ -1,0 +1,84 @@
+---
+title: "Untitled"
+author: "Justiono Putro"
+date: "October 21, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##Installed packages
+install.packages("tseries")
+install.packages("tidyr")
+install.packages("dplyr")
+install.packages("data.table")
+install.packages("ggplot2")
+install.packages("forecast")
+install.packages('lubridate')
+install.packages('fpp')
+install.packages('prophet')
+install.packages('MLmetrics')
+
+##Load libraries
+```{}
+library(data.table)
+library(tseries)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(lubridate)
+library(forecast)
+library(fpp)
+library(prophet)
+library(MLmetrics)
+```
+
+##Create functions
+###Function to combine forecasts with (1) equal weight and (2) variance-based optimal weight.
+### v = variance. fc = forecasted values
+```{}
+f.fcCombined1 <- function(fc1, fc2, fc3){ 
+  fcc1 <- (fc1+fc2+fc3)/3
+  return (fcc1) 
+}
+
+f.fcCombined2 <- function(fc1, fc2, fc3, v1, v2, v3){ 
+  fcc2 <- ((v2+v3)/(v1+v2+v3))*fc1+((v1+v3)/(v1+v2+v3))*fc2+((v1+v2)/(v1+v2+v3))*fc3
+  return (fcc2) 
+}
+
+```
+
+###Function to calculate Mean Absolute Squared Error loss (MASE). f = vector with forecasts, y = vector with actuals
+```{}
+f.MASE <- function(f,y) {
+  if(length(f)!=length(y)){ stop("Vector length is not equal") }
+  n <- length(f)
+  return(mean(abs((y - f) / ((1/(n-1)) * sum(abs(y[2:n]-y[1:n-1]))))))
+}
+```
+
+###Function to calculate Symmetric Mean Absolute Percentage Error loss (SMAPE). Input: actual and predicted values
+```{}
+f.SMAPE <- function(act, pred){ 
+  sm <- 200 * abs(act - pred) / (abs(act) + abs(pred)) # normal formula
+  sm <- ifelse(is.na(act), NA, sm)                     # omit if act is NA
+  sm <- ifelse(is.na(pred) & !is.na(act), 200, sm)     # max error if pred is NA and act is available
+  sm <- ifelse(pred==0 & act==0, 0, sm)                # perfect (arbitrary 0/0=0)
+  smape <- mean(sm, na.rm = TRUE)
+  return (smape) 
+}
+```
+
+## Read data
+```{}
+setwd("D:\\RStudio\\Kaggle\\WebTraffic")
+setwd("C:\\JP_TEMP\\CKME136")
+dt.data <- fread("train_2.csv")
+```
+
+```{}
+```
+
